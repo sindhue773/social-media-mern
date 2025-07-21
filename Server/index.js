@@ -3,39 +3,44 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
+
+// Import Routes
 import AuthRoute from './Routes/AuthRoute.js';
 import UserRoute from './Routes/UserRoute.js';
 import PostRoute from './Routes/PostRoute.js';
 import UploadRoute from './Routes/UploadRoute.js';
 
+// Load .env variables
+dotenv.config();
 
-// Routes
+// Initialize Express App
 const app = express();
 
-
-// to serve images for public (public folder)
+// Serve static files (like images)
 app.use(express.static('public'));
 app.use('/images', express.static('images'));
 
-
-// MiddleWare
-app.use(bodyParser.json({ limit: "30mb", extended: true }));
-app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
+// Middleware
+app.use(bodyParser.json({ limit: '30mb', extended: true }));
+app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
 app.use(cors());
 
-dotenv.config();
-
-mongoose.connect
-    (process.env.MONGO_DB, { useNewUrlParser: true, useUnifiedTopology: true }
-    ).then(() =>
-        app.listen(process.env.PORT, () => console.log(`listening at ${process.env.PORT}`))
-    ).catch((error) =>
-        console.log('error')
+// Connect to MongoDB
+mongoose
+  .connect(process.env.MONGO_DB, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() =>
+    app.listen(process.env.PORT, () =>
+      console.log(`✅ Server running at http://localhost:${process.env.PORT}`)
     )
+  )
+  .catch((error) => {
+    console.error('❌ MongoDB connection error:', error.message);
+  });
 
-
-// uses of routes
-
+// Routes
 app.use('/auth', AuthRoute);
 app.use('/user', UserRoute);
 app.use('/post', PostRoute);
