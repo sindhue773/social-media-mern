@@ -16,6 +16,25 @@ dotenv.config();
 // Initialize Express App
 const app = express();
 
+// CORS Configuration
+const allowedOrigins = [
+  'https://social-media-mern-blond.vercel.app/auth', // ✅ Replace this with your actual frontend URL
+  'http://localhost:3000'             // ✅ For local development
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true
+  })
+);
+
 // Serve static files (like images)
 app.use(express.static('public'));
 app.use('/images', express.static('images'));
@@ -23,7 +42,6 @@ app.use('/images', express.static('images'));
 // Middleware
 app.use(bodyParser.json({ limit: '30mb', extended: true }));
 app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
-app.use(cors());
 
 // Connect to MongoDB
 mongoose
