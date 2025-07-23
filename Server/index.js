@@ -18,8 +18,8 @@ const app = express();
 
 // CORS Configuration
 const allowedOrigins = [
-  'https://social-media-mern-blond.vercel.app/auth', // ✅ Replace this with your actual frontend URL
-  'http://localhost:3000'             // ✅ For local development
+  'https://social-media-mern-blond.vercel.app',
+  'http://localhost:3000',
 ];
 
 app.use(
@@ -28,6 +28,7 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.error('Blocked by CORS:', origin);
         callback(new Error('Not allowed by CORS'));
       }
     },
@@ -43,7 +44,7 @@ app.use('/images', express.static('images'));
 app.use(bodyParser.json({ limit: '30mb', extended: true }));
 app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
 
-// Connect to MongoDB
+// MongoDB Connection
 mongoose
   .connect(process.env.MONGO_DB, {
     useNewUrlParser: true,
